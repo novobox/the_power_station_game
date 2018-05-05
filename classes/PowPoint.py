@@ -3,7 +3,7 @@ class PowPoint(object):
     posX: Position X sur la grille
     posY: Position Y sur la grille
     state: Etat (0: Vide / 1: Electrisé / 2: Surchargée
-    owner: Id du joueur en possession du point
+    player: Id du joueur en possession du point
     activated: BoOl, False: Desactivé, True activé
     """
     
@@ -14,12 +14,15 @@ class PowPoint(object):
     
     def clearPoint(self):
         self.state = 0
-        self.owner = 0
+        self.player = None
         self.activated = False
 
     def pow(self, Player):
         if(self.state < 2):
             self.state += 1
-            self.owner = player
+            self.player = Player
             return True
         return False
+    
+    def __str__(self):
+        return "O"
