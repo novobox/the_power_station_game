@@ -6,6 +6,7 @@ from classes.PowStation import PowStation
 def display_char_per_point(PowPoint):
 
     colors = {}
+    default_color = '\033[34;5;200m'
     reset_color = '\033[0m'
     colors['magenta'] = {
         'active': '\033[38;5;206m',
@@ -18,7 +19,7 @@ def display_char_per_point(PowPoint):
 
     colors['rouge'] = {
         'active' : '\033[0;1;101m',
-        'deactive': '\033[31;1;100m',
+        'deactive': '\033[31;1;107m',
         }
     colors['vert'] = {
         'active' : '\033[30;1;102m',
@@ -26,7 +27,7 @@ def display_char_per_point(PowPoint):
         }
         
 
-    color = ''
+    color = default_color
     char = '+'
     
     if PowPoint.state == 1:
@@ -40,15 +41,22 @@ def display_char_per_point(PowPoint):
             color = colors[PowPoint.player.color]['active']
     
     return " %s%s%s " % (color, char, reset_color)
-        
 
 
-def display_grid(grid):
+#def charge_grid_status(grid):
+    
+    
+
+
+def display_grid(grid, **kwargs):
+
 
     width = len(grid)    # 3 rows in your example
     height  = len(grid[0]) # 2 columns in your example
 
-    display_grid = ''        
+    
+    display_grid = ''
+
     for i in range(width):
         row = ''
         for j in range(height):
@@ -56,6 +64,7 @@ def display_grid(grid):
         display_grid += "%s\n" % row
 
     return display_grid
+
     
 
 def game():
@@ -103,14 +112,93 @@ def scneration01(grid, player1, player2):
     grid[14][21].pow(player2)
     grid[14][20].pow(player2)
     grid[15][20].pow(player2)
+ 
     grid[15][21].pow(player2)
 
 
 
     return False
 
+###################################################
+
+from cmd import Cmd
+
+class MyPrompt(Cmd):
+
+    def __init__(self):
+        
+        self.n_player = 0
+        self.player1 = Player(1, 'rouge')
+        self.player2 = Player(2, 'vert')
+
+        self.init_game()
+
+        scneration01(self.grid, self.player1, self.player2)
+
+
+        self.display_game()
+        super(MyPrompt, self).__init__()
+
+
+
+        self.do_pow('')
+
+    def init_game(self):
+        width = 30
+        height = 50
+    
+        self.grid = []
+        for j in range(height):
+            row = []
+            for i in range(width):
+                point = PowPoint(i,j)
+                row.append(point)
+            self.grid.append(row)
+
+    def display_game(self):
+        print(display_grid(self.grid))
+        
+
+    def do_pow(self, args):
+
+        player = None
+        
+        self.n_player = (self.n_player % 2) + 1
+        #n_player = input('Player (1 or 2): ')
+        if int(self.n_player) == 1:
+            player = self.player1
+        elif int(self.n_player) == 2:
+            player = self.player2
+
+        #self.prompt = "Player %s>" % player.id
+
+
+        pos = input("Player %s> X Y: " % player.id)
+
+        posXY = pos.split(' ')
+        posX = posXY[0]
+        posY = posXY[1]
+
+
+        #if int(n_player) == 1:
+        #    player = self.player1
+        #elif int(n_player) == 2:
+        #    player = self.player2
+
+        self.grid[int(posY)][int(posX)].pow(player)
+            
+        self.display_game()
+        self.do_pow('')
+
+    def do_quit(self, args):
+        """Quits the program."""
+        print("Quitting.")
+        raise SystemExit
 
 
 
 if __name__ == '__main__':
-    game()
+    p = MyPrompt()
+    p.prompt = '>'
+    p.cmdloop()
+    #game()
