@@ -30,6 +30,9 @@ def display_char_per_point(PowPoint):
 
     color = default_color
     char = '+'
+
+    if PowPoint.playable:
+            char = '?'
     
     if PowPoint.state == 1:
         char = 'X'
@@ -42,11 +45,6 @@ def display_char_per_point(PowPoint):
             color = colors[PowPoint.player.color]['active']
     
     return " %s%s%s " % (color, char, reset_color)
-
-
-def charge_grid_status(grid, moves):
-    return False
-    
 
 
 def display_grid(grid, **kwargs):
@@ -73,12 +71,15 @@ def scneration01(game):
     #print(grid[14][20].posX)
     
     game.player_play_pow(1, 20, 14)
+
+    game.activate_pow(20, 14)
+
+
     game.player_play_pow(1, 22, 16)
     game.player_play_pow(1, 21, 17)
     game.player_play_pow(1, 22, 18)
     game.player_play_pow(1, 21, 19)
 
-    game.activate_pow(21, 19)
 
     game.player_play_pow(2, 21, 14)
     game.player_play_pow(2, 20, 14)
@@ -111,13 +112,10 @@ class MyPrompt(Cmd):
     def do_pow(self, args):
 
         player = None
-        
         self.n_player = (self.n_player % 2) + 1
-        #n_player = input('Player (1 or 2): ')
         player = self.game.getplayer(int(self.n_player))
 
         pos = input("Player %s> X Y: " % player.id)
-
         posXY = pos.split(' ')
         posX = posXY[0]
         posY = posXY[1]

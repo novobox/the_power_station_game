@@ -15,6 +15,7 @@ class PowPoint(object):
     def clearPoint(self):
         self.state = 0
         self.player = None
+        self.playable = False
         self.activated = False
 
     def activate(self):
