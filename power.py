@@ -1,6 +1,7 @@
-from classes.PowPoint import PowPoint
+from classes.Game import Game
+from classes.Station import Station
 from classes.Player  import Player
-from classes.PowStation import PowStation
+from classes.PowPoint import PowPoint
 
 
 def display_char_per_point(PowPoint):
@@ -67,55 +68,22 @@ def display_grid(grid, **kwargs):
 
     
 
-def game():
-
-    #player1 = Player(1, 'magenta')
-    #player2 = Player(2, 'orange')
-    player1 = Player(1, 'rouge')
-    player2 = Player(2, 'vert')
-    
-    # INIT map
-    
-    width = 30
-    height = 50
-    moves = []
-    grid = []
-    for j in range(height):
-        row = []
-        for i in range(width):
-            point = PowPoint(i,j)
-            row.append(point)
-        grid.append(row)
-    
-
-    scneration01(grid, moves, player1, player2)
-
-    print(display_grid(grid))
-
-
-
-def point_pow(grid, moves, player, X, Y):
-
-    grid[Y][X].pow(player)
-    moves.append(grid[Y][X])
-    
-
-def scneration01(grid, moves, player1, player2):
+def scneration01(game):
 
     #print(grid[14][20].posX)
     
-    point_pow(grid, moves, player1, 20, 14)
-    point_pow(grid, moves, player1, 22, 16)
-    point_pow(grid, moves, player1, 21, 17)
-    point_pow(grid, moves, player1, 22, 18)
-    point_pow(grid, moves, player1, 21, 19)
+    game.player_play_pow(1, 20, 14)
+    game.player_play_pow(1, 22, 16)
+    game.player_play_pow(1, 21, 17)
+    game.player_play_pow(1, 22, 18)
+    game.player_play_pow(1, 21, 19)
 
-    grid[19][21].activate()
+    game.activate_pow(21, 19)
 
-    point_pow(grid, moves, player2, 21, 14)
-    point_pow(grid, moves, player2, 20, 14)
-    point_pow(grid, moves, player2, 21, 15)
-    point_pow(grid, moves, player2, 20, 16)
+    game.player_play_pow(2, 21, 14)
+    game.player_play_pow(2, 20, 14)
+    game.player_play_pow(2, 21, 15)
+    game.player_play_pow(2, 20, 16)
 
 
     return False
@@ -127,41 +95,18 @@ from cmd import Cmd
 class MyPrompt(Cmd):
 
     def __init__(self):
-        
         self.n_player = 0
-        self.player1 = Player(1, 'rouge')
-        self.player2 = Player(2, 'vert')
+        self.game = Game()
 
-        # Sauvegarde des points powered
-        self.moves = []
-
-        self.init_game()
-
-        scneration01(self.grid, self.moves, self.player1, self.player2)
+        scneration01(self.game)
 
 
         self.display_game()
         super(MyPrompt, self).__init__()
-
-
-
         self.do_pow('')
 
-    def init_game(self):
-        width = 30
-        height = 50
-    
-        self.grid = []
-        for j in range(height):
-            row = []
-            for i in range(width):
-                point = PowPoint(i,j)
-                row.append(point)
-            self.grid.append(row)
-
     def display_game(self):
-        print(display_grid(self.grid))
-        
+        print(display_grid(self.game.grid))
 
     def do_pow(self, args):
 
@@ -169,13 +114,7 @@ class MyPrompt(Cmd):
         
         self.n_player = (self.n_player % 2) + 1
         #n_player = input('Player (1 or 2): ')
-        if int(self.n_player) == 1:
-            player = self.player1
-        elif int(self.n_player) == 2:
-            player = self.player2
-
-        #self.prompt = "Player %s>" % player.id
-
+        player = self.game.getplayer(int(self.n_player))
 
         pos = input("Player %s> X Y: " % player.id)
 
@@ -183,13 +122,7 @@ class MyPrompt(Cmd):
         posX = posXY[0]
         posY = posXY[1]
 
-
-        #if int(n_player) == 1:
-        #    player = self.player1
-        #elif int(n_player) == 2:
-        #    player = self.player2
-        point_pow(self.grid, self.moves, player, int(posX), int(posY))
-        #self.grid[int(posY)][int(posX)].pow(player)
+        self.game.player_play_pow(player.id, posX, posY)
             
         self.display_game()
         self.do_pow('')
