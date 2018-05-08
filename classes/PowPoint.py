@@ -17,6 +17,11 @@ class PowPoint(object):
         self.player = None
         self.activated = False
 
+    def activate(self):
+        self.activated = True
+    def deactivate(self):
+        self.activated = False
+
     def pow(self, Player):
         if(self.state < 2):
             self.state += 1

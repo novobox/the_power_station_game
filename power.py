@@ -43,8 +43,8 @@ def display_char_per_point(PowPoint):
     return " %s%s%s " % (color, char, reset_color)
 
 
-#def charge_grid_status(grid):
-    
+def charge_grid_status(grid, moves):
+    return False
     
 
 
@@ -78,7 +78,7 @@ def game():
     
     width = 30
     height = 50
-    
+    moves = []
     grid = []
     for j in range(height):
         row = []
@@ -88,33 +88,34 @@ def game():
         grid.append(row)
     
 
-    scneration01(grid, player1, player2)
+    scneration01(grid, moves, player1, player2)
 
     print(display_grid(grid))
 
 
 
+def point_pow(grid, moves, player, X, Y):
 
+    grid[Y][X].pow(player)
+    moves.append(grid[Y][X])
+    
 
-def scneration01(grid, player1, player2):
+def scneration01(grid, moves, player1, player2):
 
-    print(grid[14][20].posX)
+    #print(grid[14][20].posX)
+    
+    point_pow(grid, moves, player1, 20, 14)
+    point_pow(grid, moves, player1, 22, 16)
+    point_pow(grid, moves, player1, 21, 17)
+    point_pow(grid, moves, player1, 22, 18)
+    point_pow(grid, moves, player1, 21, 19)
 
-    grid[14][20].pow(player1)
-    grid[16][22].pow(player1)
-    grid[17][21].pow(player1)
-    grid[18][22].pow(player1)
-    grid[19][21].pow(player1)
-    grid[15][21].pow(player1)
+    grid[19][21].activate()
 
-
-
-    grid[14][21].pow(player2)
-    grid[14][20].pow(player2)
-    grid[15][20].pow(player2)
- 
-    grid[15][21].pow(player2)
-
+    point_pow(grid, moves, player2, 21, 14)
+    point_pow(grid, moves, player2, 20, 14)
+    point_pow(grid, moves, player2, 21, 15)
+    point_pow(grid, moves, player2, 20, 16)
 
 
     return False
@@ -131,9 +132,12 @@ class MyPrompt(Cmd):
         self.player1 = Player(1, 'rouge')
         self.player2 = Player(2, 'vert')
 
+        # Sauvegarde des points powered
+        self.moves = []
+
         self.init_game()
 
-        scneration01(self.grid, self.player1, self.player2)
+        scneration01(self.grid, self.moves, self.player1, self.player2)
 
 
         self.display_game()
@@ -184,8 +188,8 @@ class MyPrompt(Cmd):
         #    player = self.player1
         #elif int(n_player) == 2:
         #    player = self.player2
-
-        self.grid[int(posY)][int(posX)].pow(player)
+        point_pow(self.grid, self.moves, player, int(posX), int(posY))
+        #self.grid[int(posY)][int(posX)].pow(player)
             
         self.display_game()
         self.do_pow('')
