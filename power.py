@@ -101,8 +101,8 @@ class MyPrompt(Cmd):
 
         scneration01(self.game)
 
-
         self.display_game()
+
         super(MyPrompt, self).__init__()
         self.do_pow('')
 
