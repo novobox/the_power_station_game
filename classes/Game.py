@@ -109,9 +109,10 @@ class Game(object):
         X = int(X)
         Y = int(Y)
         player = self.getplayer(idplayer)
+        self.player_playables_powpoints(idplayer)
         self.grid[Y][X].pow(player)
         self.moves.append(self.grid[Y][X])
-        self.player_playables_powpoints(idplayer)
+
     
     def activate_pow(self, X, Y):
         self.grid[Y][X].activate()
