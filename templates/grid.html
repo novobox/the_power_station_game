@@ -1,0 +1,72 @@
+<html>
+  <head>
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <script>
+      $(document).ready(function(){
+        $('.powpoint').click(function(){
+
+          var px = $(this).data('x');
+          var py = $(this).data('y');
+
+          $.post('/',
+             {x: px,
+             y: py,
+             player: $('.player').data('id'),}
+          );
+          location.reload();
+        });
+      });
+    </script>
+    <style>
+      .powpoint {
+      cursor: pointer;
+      }
+    </style>
+  </head>
+  
+  <body>
+    <span class="player" data-id="{{ player_id }}" >PLAYER : {{ player_id }}</span>
+
+    {{data.player}}
+    
+    <table style = "border: 1px solid #000" cellpadding=0 cellspacing=0>
+    {% for line in grid %}
+    <tr>
+       {% for point in line %}
+       <td class="powpoint" data-x = "{{point.posX}}" data-y = "{{point.posY}}" style = "border: 1px solid #CCC; width:20px; text-align: center; vertical-align: middle;" colspan = 2>
+
+         {% if point.activated %}
+           {% if point.player.id == 1 %}
+           <span style="color:#FF0000">
+           {% elif point.player.id == 2 %}
+           <span style="color:#0000FF">
+           {% else %}
+           <span>
+           {% endif %}
+         {% else %}
+           {% if point.player.id == 1 %}
+           <span style="color:#CC0000">
+           {% elif point.player.id == 2 %}
+           <span style="color:#0000CC">
+           {% else %}
+           <span>
+           {% endif %}
+         {% endif %}
+           
+         {% if point.state == 1 %}
+         X
+         {% else %}
+           {% if point.state == 2 %}
+             @
+           {% else %}
+           .
+           {% endif %}
+         {% endif %}
+         </span>
+       </td>
+       {% endfor %}
+    </tr>
+    {% endfor %}
+    </table>
+  </body>
+</html>

@@ -25,7 +25,7 @@ class Game(object):
 
 
     def init_game(self):
-        width = 30
+        width = 50
         height = 50
     
         self.grid = []
