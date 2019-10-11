@@ -69,13 +69,16 @@ def index():
     else:
         init.player_id = 2
         
-    return render_template('grid.html', grid=game.grid, player_id=init.player_id, data=data)
+    return render_template('grid.html', grid=game.grid, player_id=init.player_id)
 
 @app.route('/add_point', methods=['GET', 'POST'])
 def add_point():
-    game.player_play_pow(2, 29, 22)
-    return redirect('/')
+    data = ''
+    if request.method == 'POST':
+        data = request.form
+        game.player_play_pow(init.player_id, data['x'], data['y'])
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='127.0.0.1')
+    #app.run(debug=True, host='127.0.0.1')
+    app.run(debug=True, host='10.0.10.61')
